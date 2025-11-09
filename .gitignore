@@ -1,0 +1,7 @@
+node_modules/
+recommendations.db
+.DS_Store
+*.log
+.env
+.vercel
+/tmp
