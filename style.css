@@ -35,12 +35,32 @@ header h1 {
     overflow: hidden;
 }
 
+/* 사이드바 기본 스타일 */
 .sidebar {
-    width: 350px;
+    width: 350px; /* 기존 너비 유지 */
     background-color: white;
     padding: 20px;
     overflow-y: auto;
     box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease; /* 접기/펼치기 애니메이션 */
+}
+
+/* 사이드바 접힌 상태 */
+.sidebar.collapsed {
+    width: 50px; /* 접었을 때 최소 너비, 버튼만 보이도록 */
+    padding: 10px 5px; /* 내용 줄이기 */
+}
+
+/* 토글 버튼 스타일 */
+#toggleSidebar {
+    width: 100%;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    border: none;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    text-align: left;
 }
 
 .input-section {
