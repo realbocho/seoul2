@@ -1,86 +1,80 @@
-// Vercel Serverless Function for recommendations API
+// Next.js API route for recommendations
+import { NextResponse } from 'next/server';
+
+// 메모리에 데이터 저장 (테스트용)
 let recommendations = {};
 
-// CORS 헤더 설정
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-};
+export async function GET() {
+    return NextResponse.json(recommendations, {
+        headers: {
+            'Access-Control-Allow-Origin': 'https://realbocho.github.io',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+        },
+    });
+}
 
-// OPTIONS 요청 처리 (CORS preflight)
-export const config = {
-    runtime: 'edge',
-};
-
-export default async function handler(req) {
-    // CORS preflight 요청 처리
-    if (req.method === 'OPTIONS') {
-        return new Response(null, { headers: corsHeaders });
-    }
-
+export async function POST(request) {
     try {
-        if (req.method === 'GET') {
-            return new Response(JSON.stringify(recommendations), {
-                status: 200,
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...corsHeaders
-                }
-            });
-        }
+        const data = await request.json();
+        const { placeName, address, x, y, reason } = data;
 
-        if (req.method === 'POST') {
-            const data = await req.json();
-            const { placeName, address, x, y, reason } = data;
-
-            if (!placeName || !reason) {
-                return new Response(JSON.stringify({ error: '장소명과 추천 사유는 필수입니다.' }), {
+        if (!placeName || !reason) {
+            return NextResponse.json(
+                { error: '장소명과 추천 사유는 필수입니다.' },
+                { 
                     status: 400,
                     headers: {
-                        'Content-Type': 'application/json',
-                        ...corsHeaders
-                    }
-                });
-            }
-
-            const key = placeName + '|' + address;
-            if (!recommendations[key]) {
-                recommendations[key] = {
-                    placeName,
-                    address,
-                    x,
-                    y,
-                    reasons: []
-                };
-            }
-            recommendations[key].reasons.push(reason);
-
-            return new Response(JSON.stringify(recommendations[key]), {
-                status: 201,
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...corsHeaders
+                        'Access-Control-Allow-Origin': 'https://realbocho.github.io',
+                        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                    },
                 }
-            });
+            );
         }
 
-        return new Response(JSON.stringify({ error: '지원하지 않는 메서드입니다.' }), {
-            status: 405,
-            headers: {
-                'Content-Type': 'application/json',
-                ...corsHeaders
-            }
-        });
+        const key = placeName + '|' + address;
+        if (!recommendations[key]) {
+            recommendations[key] = {
+                placeName,
+                address,
+                x,
+                y,
+                reasons: []
+            };
+        }
+        recommendations[key].reasons.push(reason);
 
+        return NextResponse.json(recommendations[key], {
+            status: 201,
+            headers: {
+                'Access-Control-Allow-Origin': 'https://realbocho.github.io',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type',
+            },
+        });
     } catch (error) {
         console.error('API 오류:', error);
-        return new Response(JSON.stringify({ error: '서버 오류가 발생했습니다.' }), {
-            status: 500,
-            headers: {
-                'Content-Type': 'application/json',
-                ...corsHeaders
+        return NextResponse.json(
+            { error: '서버 오류가 발생했습니다.' },
+            { 
+                status: 500,
+                headers: {
+                    'Access-Control-Allow-Origin': 'https://realbocho.github.io',
+                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                },
             }
-        });
+        );
     }
+}
+
+export async function OPTIONS() {
+    return new Response(null, {
+        headers: {
+            'Access-Control-Allow-Origin': 'https://realbocho.github.io',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+        },
+    });
 }
