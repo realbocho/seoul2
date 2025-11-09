@@ -149,19 +149,21 @@ async function handleRecommendSubmit(e) {
     
     // 로딩 표시
     const submitButton = e.target.querySelector('button[type="submit"]');
-    const originalText = submitButton.textContent;
-    submitButton.textContent = '추천 중...';
-    submitButton.disabled = true;
-    
+    const originalText = submitButton ? submitButton.textContent : '추천하기';
+    if (submitButton) {
+        submitButton.textContent = '추천 중...';
+        submitButton.disabled = true;
+    }
+
     try {
         // 장소 검색
         const ps = new kakao.maps.services.Places();
         ps.keywordSearch(placeName, async (data, status) => {
-            if (status === kakao.maps.services.Status.OK && data.length > 0) {
-                const place = data[0];
-                
-                // 서버에 추천 저장
-                try {
+            try {
+                if (status === kakao.maps.services.Status.OK && data.length > 0) {
+                    const place = data[0];
+
+                    // 서버에 추천 저장
                     const response = await fetch(`${API_BASE_URL}/recommendations`, {
                         method: 'POST',
                         headers: {
@@ -175,34 +177,47 @@ async function handleRecommendSubmit(e) {
                             reason: reason
                         })
                     });
-                    
+
                     if (!response.ok) {
-                        throw new Error('추천 저장 실패');
+                        // 서버가 보낸 자세한 오류 메시지를 로그에 출력
+                        let bodyText = '';
+                        try {
+                            bodyText = await response.text();
+                        } catch (e) {
+                            bodyText = '<응답 본문을 읽는 중 오류 발생>';
+                        }
+                        console.error('추천 저장 실패. 상태:', response.status, '응답:', bodyText);
+                        alert('추천 저장 중 서버 오류가 발생했습니다. 개발자 콘솔을 확인하세요.');
+                        return;
                     }
-                    
+
                     // 성공 시 데이터 다시 로드
                     await loadRecommendations();
-                    
+
                     // 폼 초기화
                     document.getElementById('recommendForm').reset();
                     alert('추천이 등록되었습니다!');
-                } catch (error) {
-                    console.error('추천 저장 오류:', error);
-                    alert('추천 저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+                } else {
+                    alert('장소를 찾을 수 없습니다. 다른 이름으로 검색해보세요.');
                 }
-            } else {
-                alert('장소를 찾을 수 없습니다. 다른 이름으로 검색해보세요.');
+            } catch (error) {
+                console.error('추천 저장 처리 중 오류:', error);
+                alert('추천 저장 중 오류가 발생했습니다. 개발자 콘솔을 확인하세요.');
+            } finally {
+                // 버튼 원래대로 복원 (모든 경로에서)
+                if (submitButton) {
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                }
             }
-            
-            // 버튼 원래대로 복원
-            submitButton.textContent = originalText;
-            submitButton.disabled = false;
         });
     } catch (error) {
         console.error('장소 검색 오류:', error);
         alert('장소 검색 중 오류가 발생했습니다.');
-        submitButton.textContent = originalText;
-        submitButton.disabled = false;
+        if (submitButton) {
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+        }
     }
 }
 
