@@ -13,26 +13,28 @@
         </header>
         
         <div class="main-content">
-            <div class="sidebar">
+            <div id="sidebar" class="sidebar">
                 <button id="toggleSidebar">⮜ 접기</button>
-                <div class="input-section">
-                    <h2>장소 추천하기</h2>
-                    <form id="recommendForm">
-                        <div class="form-group">
-                            <label for="placeName">장소명</label>
-                            <input type="text" id="placeName" placeholder="예: 강남역 스타벅스" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="reason">추천 사유</label>
-                            <textarea id="reason" placeholder="이 장소를 추천하는 이유를 입력하세요" required></textarea>
-                        </div>
-                        <button type="submit">추천하기</button>
-                    </form>
-                </div>
-                
-                <div class="recommendations-section">
-                    <h2>추천 현황</h2>
-                    <div id="recommendationsList"></div>
+                <div class="sidebar-content">
+                    <div class="input-section">
+                        <h2>장소 추천하기</h2>
+                        <form id="recommendForm">
+                            <div class="form-group">
+                                <label for="placeName">장소명</label>
+                                <input type="text" id="placeName" placeholder="예: 강남역 스타벅스" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reason">추천 사유</label>
+                                <textarea id="reason" placeholder="이 장소를 추천하는 이유를 입력하세요" required></textarea>
+                            </div>
+                            <button type="submit">추천하기</button>
+                        </form>
+                    </div>
+                    
+                    <div class="recommendations-section">
+                        <h2>추천 현황</h2>
+                        <div id="recommendationsList"></div>
+                    </div>
                 </div>
             </div>
             
