@@ -37,18 +37,37 @@ header h1 {
 
 /* 사이드바 기본 스타일 */
 .sidebar {
-    width: 350px; /* 기존 너비 유지 */
+    width: 350px;
     background-color: white;
     padding: 20px;
     overflow-y: auto;
     box-shadow: 2px 0 4px rgba(0,0,0,0.1);
-    transition: all 0.3s ease; /* 접기/펼치기 애니메이션 */
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+/* 사이드바 콘텐츠 */
+.sidebar-content {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    overflow-x: hidden;
 }
 
 /* 사이드바 접힌 상태 */
 .sidebar.collapsed {
-    width: 50px; /* 접었을 때 최소 너비, 버튼만 보이도록 */
-    padding: 10px 5px; /* 내용 줄이기 */
+    width: 50px;
+    padding: 10px 5px;
+}
+
+.sidebar.collapsed .sidebar-content {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sidebar.collapsed #toggleSidebar {
+    width: 40px;
+    margin: 0;
+    padding: 5px;
 }
 
 /* 토글 버튼 스타일 */
