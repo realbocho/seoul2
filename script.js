@@ -359,6 +359,18 @@ document.addEventListener('DOMContentLoaded', function() {
             initMap();
         }, 200);
     });
+    // 사이드바 접기/펼치기
+    const toggleButton = document.getElementById('toggleSidebar');
+    const sidebar = document.getElementById('sidebar');
+    if (toggleButton && sidebar) {
+        toggleButton.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            // 지도 크기 재조정
+            if (map) {
+                kakao.maps.event.trigger(map, 'resize');
+            }
+        });
+    }
 });
 
 // window.onload도 사용 (모든 리소스 로드 후)
