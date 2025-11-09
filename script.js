@@ -363,13 +363,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleButton = document.getElementById('toggleSidebar');
     const sidebar = document.getElementById('sidebar');
     if (toggleButton && sidebar) {
-        toggleButton.addEventListener('click', function() {
-            sidebar.classList.toggle('collapsed');
+        toggleButton.onclick = function() {
+            if (sidebar.classList.contains('collapsed')) {
+                sidebar.classList.remove('collapsed');
+                toggleButton.textContent = '⮜ 접기';
+            } else {
+                sidebar.classList.add('collapsed');
+                toggleButton.textContent = '⮞ 펼치기';
+            }
             // 지도 크기 재조정
             if (map) {
-                kakao.maps.event.trigger(map, 'resize');
+                setTimeout(() => {
+                    kakao.maps.event.trigger(map, 'resize');
+                }, 100);
             }
-        });
+        };
     }
 });
 
